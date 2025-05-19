@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Teendőlista</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #uj-teendo {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #hozzaadas {
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #hozzaadas:hover {
+      background-color: #218838;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      padding: 10px;
+      background-color: #fff;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    li:hover {
+      background-color: #f0f0f0;
+    }
+
+    .kesz {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <h1>Teendőlista</h1>
+  <input type="text" id="uj-teendo" placeholder="Új teendő...">
+  <button id="hozzaadas">Hozzáadás</button>
+
+  <ul id="teendo-lista"></ul>
+
+  <script>
+    const hozzaadasGomb = document.getElementById("hozzaadas");
+    const teendoInput = document.getElementById("uj-teendo");
+    const teendoLista = document.getElementById("teendo-lista");
+
+    hozzaadasGomb.addEventListener("click", () => {
+      const szoveg = teendoInput.value.trim();
+      if (szoveg === "") return;
+
+      const ujElem = document.createElement("li");
+      ujElem.textContent = szoveg;
+
+      // Áthúzás kattintásra
+      ujElem.addEventListener("click", () => {
+        ujElem.classList.toggle("kesz");
+      });
+
+      teendoLista.appendChild(ujElem);
+      teendoInput.value = "";
+    });
+  </script>
+</body>
+</html>

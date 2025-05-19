@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felhasználó adatlap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="user-profile"></div>
+   <script>
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('id');
+
+    if (!username) {
+        document.getElementById('user-profile').innerHTML = '<p>Felhasználó nincs megadva!</p>';
+    } else {
+        fetch(`https://api.github.com/users/${username}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Felhasználó nem található');
+                }
+                return res.json();
+            })
+            .then(data => {
+                const fields = [
+                    { key: 'avatar_url', type: 'image' },
+                    { key: 'name', label: 'Név' },
+                    { key: 'blog', label: 'Blog', isLink: true },
+                    { key: 'location', label: 'Hely' },
+                    { key: 'bio', label: 'Bemutatkozás' },
+                    { key: 'public_repos', label: 'Publikus repók száma' },
+                    { key: 'followers', label: 'Követők száma' }
+                ];
+
+                let html = '<div class="card">';
+                fields.forEach(field => {
+                    const value = data[field.key];
+                    if (value) {
+                        if (field.type === 'image') {
+                            html += `<img src="${value}" alt="Avatar" width="100">`;
+                        } else if (field.isLink) {
+                            html += `<p><strong>${field.label}:</strong> <a href="${value}" target="_blank">${value}</a></p>`;
+                        } else {
+                            html += `<p><strong>${field.label}:</strong> ${value}</p>`;
+                        }
+                    }
+                });
+                html += '</div>';
+                document.getElementById('user-profile').innerHTML = html;
+            })
+            .catch(err => {
+                document.getElementById('user-profile').innerHTML = `<p>Hiba történt: ${err.message}</p>`;
+            });
+    }
+</script>
+
+</body>
+</html>

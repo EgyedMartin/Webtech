@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User keresése</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h4>User keresése</h4>
+    <label for="user-name">User neve:</label>
+    <input type="text" id="user-name">
+    <button id="search-btn" class="btn btn-primary">Keresés</button>
+
+    <div id="results"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function searchUser(searchText) {
+            fetch('https://api.github.com/users/' + encodeURIComponent(searchText), {
+                headers: {
+                    'Authorization': 'Bearer ' + GITHUB_ACCESS_TOKEN
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const resultDiv = document.querySelector('#results');
+                    resultDiv.innerHTML = '';
+
+                    if (data.message === 'Not Found') {
+                        resultDiv.innerHTML = '<p>Felhasználó nem található.</p>';
+                    } else {
+                        const html = `
+                        <a href="user.html?id=${data.login}" style="text-decoration: none; color: inherit;">
+                        <div class="card" style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${data.avatar_url}" width="50" style="border-radius: 50%;">
+                        <strong>${data.login}</strong>
+                        </div>
+                        </a>
+                        `;
+                        resultDiv.innerHTML = html;
+                    }
+                });
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('user-name').value.trim();
+            if (input === '') {
+                alert('Kérlek add meg a felhasználó nevét!');
+                return;
+            }
+            searchUser(input);
+        }
+
+        document.getElementById('search-btn').addEventListener('click', handleSearch);
+
+        document.getElementById('user-name').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const input = document.getElementById('user-name').value.trim();
+            if (input === '') {
+                alert('Kérlek add meg a felhasználó nevét!');
+                return;
+            }
+            searchUser(input);
+        });
+    </script>
+
+
+</body>
+
+</html>
